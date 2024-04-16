@@ -11,61 +11,56 @@ To perform regular differncing,seasonal adjustment and log transformatio on inte
 ## PROGRAM:
 ### Name : YUVARAJ.S
 ### Register Number : 212222240119
-### REGULAR DIFFERENCING
-```py
-import pandas as pd
-import matplotlib.pyplot as plt
-import numpy as np
-data=pd.read_csv("AirPassengers.csv")
-data.head(5)
-passengers = pd.DataFrame(data)
-passengers['shifted_value']=passengers['#Passengers'].shift(1)
-passengers['difference_value']=passengers['#Passengers']-passengers['shifted_value']
-passengers.dropna(inplace=True)
-print(passengers)
-passengers.plot(kind='line')
-```
-### SEASONAL ADJUSTMENT
 ```py
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from statsmodels.tsa.seasonal import seasonal_decompose
-data=pd.read_csv("AirPassengers.csv",parse_dates=['Month'],index_col='Month')
-passengers=pd.DataFrame(data)
-result=seasonal_decompose(passengers['#Passengers'],model='additive',period=1)
-seasonal=result.seasonal
-passengers['Seasonal_value']=passengers['#Passengers']-seasonal
-passengers.dropna(inplace=True)
-print(passengers)
-passengers.plot(kind='line')
-```
-### LOG TRANSFORMATIONS
-```py
-import numpy as np
-import pandas as pd
-data= pd.read_csv('AirPassengers.csv')
-data.head()
-data.dropna(inplace=True)
-x=data['Month']
-y=data['#Passengers']
-data_log=np.log(data['#Passengers'])
-X=data['Month']
-Y=data_log
-import matplotlib.pyplot as plt
-plt.plot(x,y)
-plt.xlabel('Original Data')
-plt.plot(X,Y)
-plt.xlabel('Log- Transformed data')
+
+# Load the data
+data = pd.read_csv("AirPassengers.csv")
+# Create DataFrame
+df = pd.DataFrame(data)
+
+# Regular differencing
+df['Regular Difference'] = df['#Passengers'].diff()
+
+# Seasonal adjustment
+result = seasonal_decompose(df['#Passengers'], model='additive', period=12)
+df['Seasonal Adjustment'] = result.resid
+
+# Log transformation
+df['Log Transformation'] = np.log(df['#Passengers'])
+
+# Plotting
+plt.figure(figsize=(14, 10))
+
+plt.subplot(4, 1, 1)
+plt.plot(df['#Passengers'], label='Original')
+plt.legend(loc='best')
+plt.title('Original Data')
+
+plt.subplot(4, 1, 2)
+plt.plot(df['Regular Difference'], label='Regular Difference')
+plt.legend(loc='best')
+plt.title('Regular Differencing')
+
+plt.subplot(4, 1, 3)
+plt.plot(df['Seasonal Adjustment'], label='Seasonal Adjustment')
+plt.legend(loc='best')
+plt.title('Seasonal Adjustment')
+
+plt.subplot(4, 1, 4)
+plt.plot(df['Log Transformation'], label='Log Transformation')
+plt.legend(loc='best')
+plt.title('Log Transformation')
+
+plt.tight_layout()
+plt.show()
 ```
 
 ## OUTPUT:
-### REGULAR DIFFERENCING:
-![](./img/1.png)
-### SEASONAL ADJUSTMENT:
-![](./img/2.png)
-### LOG TRANSFORMATION:
-![](./img/3.png)
+![alt text](image.png)
 ## RESULT:
 Thus we have created the python code for the conversion of non stationary to stationary data on international airline passenger
 data.
